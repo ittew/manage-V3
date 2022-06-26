@@ -38,6 +38,8 @@ export default {
                     this.$api.login(this.user).then(res => {
                         this.$store.commit('saveUserInfo', res)
                         this.$router.push('/welcome')
+                    }).catch(err => {
+                        console.log(err);
                     })
                 }
             })

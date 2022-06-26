@@ -10,5 +10,12 @@ export default {
             method: 'post',
             data: params
         })
+    },
+    getNoticeCount(params) {
+        return request({
+            url: '/leave/count',
+            method: 'get',
+            data: params
+        })
     }
 }
