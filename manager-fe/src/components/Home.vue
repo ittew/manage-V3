@@ -8,30 +8,16 @@
             </div>
             <!-- 导航菜单 -->
             <el-menu
-                default-active="1"
+                default-active="activeMenu"
                 text-color="#fff"
                 background-color="#001529"
                 router
                 :collapse="isCollapse"
                 class="nav-menu"
+                unique-opened
                 active-text-color="#ffd04b"
             >
-                <el-sub-menu index="1">
-                    <template #title>
-                        <el-icon><location /></el-icon>
-                        <span>Navigator One</span>
-                    </template>
-                    <el-menu-item index="1-1">item one</el-menu-item>
-                    <el-menu-item index="1-2">item one</el-menu-item>
-                </el-sub-menu>
-                <el-sub-menu index="2">
-                    <template #title>
-                        <el-icon><location /></el-icon>
-                        <span>Navigator One</span>
-                    </template>
-                    <el-menu-item index="2-1">item one</el-menu-item>
-                    <el-menu-item index="2-2">item one</el-menu-item>
-                </el-sub-menu>
+                <TreeMenu :userMenu="userMenu" :isCollapse="isCollapse" v-if="userMenu.length" />
             </el-menu>
         </div>
         <div class="content-right" :style="{'margin-left': isCollapse ? '64px' : '200px' }">
@@ -44,22 +30,34 @@
 </template>
 
 <script>
-import { Location } from '@element-plus/icons-vue'
+import TreeMenu from './TreeMenu.vue'
 import Header from './Header.vue'
 export default {
     components: {
-        Location, Header
+       Header, TreeMenu
     },
     data () {
         return {
-            isCollapse: false
+            isCollapse: false,
+            userMenu: [],
+        }
+    },
+    computed: {
+        activeMenu () {
+            return location.hash.slice(1)
         }
     },
     created () {
-        
+        this.getMenuList()
     },
     methods: {
-        
+        async getMenuList () {
+            try {
+                this.userMenu = await this.$api.getMenuList()
+            } catch (error) {
+                console.log(error)
+            }
+        }
     }
 }
 </script>

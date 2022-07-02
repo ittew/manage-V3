@@ -2,10 +2,10 @@
     <div class="nav-top">
         <el-icon class="cursor" @click="toggleMenu"><Fold /></el-icon>
         <div class="breadcrumb">
-            <span>面包屑</span>
+            <Breadcrumb />
         </div>
         <div class="userInfo cursor">
-            <el-badge :is-dot="noticeCount" class="notice">
+            <el-badge :is-dot="noticeCount?true:false" class="notice">
                 <el-icon><Bell /></el-icon>
             </el-badge>
             <el-dropdown @command="commandHandle">
@@ -16,10 +16,10 @@
                     </el-icon>
                 </div>
                 <template #dropdown>
-                <el-dropdown-menu>
-                    <el-dropdown-item command="email">邮箱: {{userInfo.userEmail}}</el-dropdown-item>
-                    <el-dropdown-item command="logout">退出</el-dropdown-item>
-                </el-dropdown-menu>
+                    <el-dropdown-menu>
+                        <el-dropdown-item command="email">邮箱: {{userInfo.userEmail}}</el-dropdown-item>
+                        <el-dropdown-item command="logout">退出</el-dropdown-item>
+                    </el-dropdown-menu>
                 </template>
             </el-dropdown>
         </div>
@@ -28,9 +28,11 @@
 
 <script>
 import { Fold, Bell, ArrowDown } from '@element-plus/icons-vue'
+import Breadcrumb from './Breadcrumb.vue'
+
 export default {
     components: {
-        Fold, Bell, ArrowDown
+        Fold, Bell, ArrowDown, Breadcrumb
     },
     data () {
         return  {
