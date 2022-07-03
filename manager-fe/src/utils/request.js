@@ -5,6 +5,7 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import config from '../config'
 import router from '../router'
+import storage from '../utils/storage'
 
 const TOKEN_INVAILD = "Token认证失败, 请重新登录"
 const NETWORK_ERROR = "网络请求异常, 请稍后重试"
@@ -18,7 +19,8 @@ const service = axios.create({
 //请求拦截
 service.interceptors.request.use(req => {
     const headers = req.headers
-    if (!headers.Authorization) headers.Authorization = 'Bear Jack' 
+    const { token = '' } = storage.getItem('userInfo') || {} 
+    if (!headers.Authorization) headers.Authorization = `Bearer ${token}`
     return req
 })
 
@@ -49,11 +51,16 @@ function request(options) {
     if (options.method.toLowerCase() === 'get') {
         options.params = options.data
     }
+    // options.mock 针对某些接口进行 mock  config.mock 针对所有接口 mock
+    let isMock = config.mock
+    if (typeof options.mock !== 'undefined') {
+        isMock = options.mock
+    }
 
     if (config.env === 'prod') {
         service.defaults.baseURL = config.baseApi
     } else {
-        service.defaults.baseURL = config.mock ? config.mockApi : config.baseApi
+        service.defaults.baseURL = isMock ? config.mockApi : config.baseApi
     }
 
     return service(options)

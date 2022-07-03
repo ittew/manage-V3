@@ -17,6 +17,6 @@ const envConfig = {
 
 export default {
    env,
-   mock: true,
+   mock: false,
    ...envConfig[env]
 }

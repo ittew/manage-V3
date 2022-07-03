@@ -40,5 +40,6 @@ module.exports = {
         return {
             code,msg
         }
-    }
+    },
+    CODE
 }

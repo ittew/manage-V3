@@ -3,10 +3,10 @@
         <div class="modal">
             <el-form ref="loginForm" :model="user" status-icon :rules="rules">
                 <div class="title">大鱼</div>
-                <el-form-item prop="username">
+                <el-form-item prop="userName">
                     <el-input type="text" size="large" v-model="user.userName" placeholder="请输入用户名" />
                 </el-form-item>
-                <el-form-item prop="userpwd">
+                <el-form-item prop="userPwd">
                     <el-input type="password" size="large" autocomplete="new-password" placeholder="请输入密码" v-model="user.userPwd" />
                 </el-form-item>
                 <el-form-item>
@@ -35,6 +35,7 @@ export default {
         loginHandle () {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
+                    console.log(valid, 'valid');
                     this.$api.login(this.user).then(res => {
                         this.$store.commit('saveUserInfo', res)
                         this.$router.push('/welcome')

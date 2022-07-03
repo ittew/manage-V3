@@ -7,6 +7,8 @@ const bodyparser = require('koa-bodyparser')
 const log = require('./utils/log')
 const users = require('./routes/users')
 const router = require('koa-router')()
+const koajwt = require('koa-jwt')
+const utils = require('./utils/utils')
 
 // error handler
 onerror(app)
@@ -26,12 +28,22 @@ app.use(views(__dirname + '/views', {
 
 // logger
 app.use(async (ctx, next) => {
-  const start = new Date()
-  await next()
-  const ms = new Date() - start
-  log.info(`${ctx.method} ${ctx.url} - ${ms}ms`)
+  await next().catch(err => {
+    if (+err.status === 401) {
+      ctx.status = 200
+      ctx.body = utils.fail('Token认证失败', utils.CODE.AUTH_ERROR)
+    } else {
+      throw err
+    }
+  })
 })
+
+app.use(koajwt({secret: 'imooc'}).unless({
+  path: ['/api/users/login']
+})) // token验证 去除不需要认证的接口url
+
 router.prefix('/api')
+
 router.use(users.routes(), users.allowedMethods())
 // routes
 app.use(router.routes(), users.allowedMethods())
