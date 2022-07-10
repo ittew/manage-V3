@@ -19,7 +19,7 @@ const service = axios.create({
 //请求拦截
 service.interceptors.request.use(req => {
     const headers = req.headers
-    const { token = '' } = storage.getItem('userInfo') || {} 
+    const { token = '' } = storage.getItem('userInfo') || {}
     if (!headers.Authorization) headers.Authorization = `Bearer ${token}`
     return req
 })
@@ -39,6 +39,9 @@ service.interceptors.response.use(res => {
         ElMessage.error(msg || NETWORK_ERROR)
         return Promise.reject(msg || NETWORK_ERROR)
     }
+}, err => {
+    ElMessage.error(err.message || NETWORK_ERROR)
+    return Promise.reject(err.message || NETWORK_ERROR)
 })
 
 /** 
@@ -70,7 +73,7 @@ function request(options) {
     request[item] = (url, data, options) => {
         return request({
             url,
-            data, 
+            data,
             methods: item,
             ...options,
         })

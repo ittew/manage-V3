@@ -129,6 +129,7 @@
 
 <script>
 import { getCurrentInstance, onMounted, reactive, ref, toRaw } from "vue";
+import { formateDate } from '../utils'
 export default {
   name: "user",
   setup() {
@@ -137,7 +138,7 @@ export default {
     const globalMethod =
       getCurrentInstance().appContext.config.globalProperties;
 
-    const user = reactive({ state: 0 });
+    const user = reactive({ state: 1 });
     let total = ref(0);
     let userList = ref([]);
     // 定义动态表格格式
@@ -153,6 +154,7 @@ export default {
       {
         label: "用户邮箱",
         prop: "userEmail",
+        width: 160,
       },
       {
         label: "用户角色",
@@ -178,10 +180,18 @@ export default {
       {
         label: "注册时间",
         prop: "createTime",
+        width: 180,
+        formatter(row, column, value) {
+          return formateDate(new Date(value))
+        }
       },
       {
         label: "最后登录时间",
         prop: "lastLoginTime",
+        width: 180,
+        formatter(row, column, value) {
+          return formateDate(new Date(value))
+        }
       },
     ]);
     // 初始化分页对象
@@ -226,7 +236,7 @@ export default {
         const res = await globalMethod.$api.userDel({
           userIds: [row.userId],
         });
-        if (res.nModified > 0) {
+        if (res.matchedCount > 0) {
           globalMethod.$message.success("删除成功");
           getUserList();
         } else {
@@ -248,7 +258,7 @@ export default {
         const res = await globalMethod.$api.userDel({
           userIds: checkUserIds.value,
         });
-        if (res.nModified > 0) {
+        if (res.matchedCount > 0) {
           globalMethod.$message.success("删除成功");
           getUserList();
         } else {
@@ -287,7 +297,7 @@ export default {
           trigger: "blur",
         },
       ],
-      depId: [{ required: true, message: "请选择部门", trigger: "blur" }],
+      deptId: [{ required: true, message: "请选择部门", trigger: "blur" }],
     });
 
     const deptList = ref([]);
@@ -315,34 +325,34 @@ export default {
       handleReset("addUserForm");
     };
 
-    let action = ref("add");
+    let action = ref("add")
     const handleSubmit = () => {
       ctx.refs.addUserForm.validate(async (valid) => {
         if (valid) {
+          let params = toRaw(userForm)
           try {
             // toRaw 将响应式对象转成普通对象
-            let params = toRaw(userForm);
-            params.userEmail += "@163.com";
-            params.action = action.value;
-            const res = globalMethod.$api.createUser(params);
+            params.userEmail += "@163.com"
+            params.action = action.value
+            const res = await globalMethod.$api.createUser(params)
             if (res) {
-              globalMethod.$message.success("用户创建成功");
-              handleClose();
-              getUserList();
+              globalMethod.$message.success(action.value === 'edit' ? '用户更新成功' : "用户创建成功");
+              handleClose()
+              getUserList()
             }
           } catch (error) {
-            console.log(error);
+            console.log(error)
+            params.userEmail = params.userEmail.replace('@163.com', '')
           }
         }
-      });
-      
-    };
+      })
+    }
     const handleEdit = (row) => {
-        action.value = "edit"
-        showModal.value = true
-        ctx.ctx.$nextTick(() => {
-            Object.assign(userForm, row)
-        })
+      action.value = "edit"
+      showModal.value = true
+      ctx.ctx.$nextTick(() => {
+        Object.assign(userForm, row)
+      })
     }
     return {
       user,

@@ -35,7 +35,6 @@ export default {
         loginHandle () {
             this.$refs.loginForm.validate(valid => {
                 if (valid) {
-                    console.log(valid, 'valid');
                     this.$api.login(this.user).then(res => {
                         this.$store.commit('saveUserInfo', res)
                         this.$router.push('/welcome')

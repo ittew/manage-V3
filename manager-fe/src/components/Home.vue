@@ -17,7 +17,7 @@
                 unique-opened
                 active-text-color="#ffd04b"
             >
-                <TreeMenu :userMenu="userMenu" :isCollapse="isCollapse" v-if="userMenu.length" />
+                <TreeMenu :userMenu="userMenu" v-if="userMenu.length" />
             </el-menu>
         </div>
         <div class="content-right" :style="{'margin-left': isCollapse ? '64px' : '200px' }">
