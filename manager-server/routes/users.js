@@ -13,7 +13,7 @@ router.post('/login', async (ctx) => {
     const { userName, userPwd } = ctx.request.body
     const res = await User.findOne({
       userName,
-      userPwd
+      userPwd: md5(userPwd)
     }, 'userId userName userEmail state role deptId roleList')
     const data = res && res._doc
     const token = jwt.sign({ data }, 'imooc', { expiresIn: '1h' })

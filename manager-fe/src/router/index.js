@@ -7,7 +7,7 @@ const routes = [
         path: '/',
         component: Home,
         redirect: '/welcome',
-        meta: { 
+        meta: {
             title: '首页'
         },
         children: [
@@ -21,10 +21,18 @@ const routes = [
             },
             {
                 name: 'user',
-                path: '/user',
+                path: '/system/user',
                 component: () => import('@/views/user.vue'),
                 meta: {
                     title: '用户管理'
+                }
+            },
+            {
+                name: 'menu',
+                path: '/system/menu',
+                component: () => import('@/views/menu.vue'),
+                meta: {
+                    title: '菜单管理'
                 }
             }
         ]
